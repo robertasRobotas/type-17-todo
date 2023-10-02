@@ -4,18 +4,19 @@ const {
   GET_ALL_TASKS,
   ADD_TASK,
   GET_TASK_BY_ID,
-  SET_TASK_DONE,
+  UPDATE_TASK,
+  DELETE_TASK,
 } = require("../controller/task");
 
-console.log(ADD_TASK);
+router.get("/tasks", GET_ALL_TASKS);
 
-router.get("/get-all-tasks", GET_ALL_TASKS);
+router.get("/tasks/:id", GET_TASK_BY_ID);
 
-router.post("/add-task", ADD_TASK);
+router.post("/tasks", ADD_TASK);
 
-router.get("/get-task-by-id/:id", GET_TASK_BY_ID);
+router.put("/tasks/:id", UPDATE_TASK);
 
-router.get("/set-task-done/:id", SET_TASK_DONE);
+router.delete("/tasks/:id", DELETE_TASK);
 
 router.use((req, res) => {
   return res.status(404).json({ response: "Endpoint not exist" });
