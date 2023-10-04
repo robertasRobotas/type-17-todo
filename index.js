@@ -1,7 +1,17 @@
 const express = require("express");
-const app = express();
+const mongoose = require("mongoose");
 require("dotenv").config();
+
+const app = express();
 const taskRouter = require("./routes/task");
+
+mongoose
+  // eslint-disable-next-line no-undef
+  .connect(process.env.DB_CONNECTION)
+  .then(() => console.log("Connected!"))
+  .catch((err) => {
+    console.log("ERROR:", err);
+  });
 
 app.use(express.json());
 

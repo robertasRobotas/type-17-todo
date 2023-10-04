@@ -1,23 +1,11 @@
-const { v4: uuidv4 } = require("uuid");
+const TaskModel = require("../models/task");
 
 let tasks = [];
 
 const GET_ALL_TASKS = (req, res) => {
-  console.log("yyyyyyyyy");
-  return res.json({ response: tasks });
-};
-
-const ADD_TASK = (req, res) => {
-  console.log("xxxxxxxxxxxxx");
-  const task = {
-    id: uuidv4(),
-    title: req.body.title,
-    isCompleted: false,
-  };
-
-  tasks.push(task);
-
-  return res.status(201).json({ response: "Task was added" });
+  TaskModel.find().then((response) => {
+    return res.json({ tasks: response });
+  });
 };
 
 const GET_TASK_BY_ID = (req, res) => {
@@ -30,6 +18,22 @@ const GET_TASK_BY_ID = (req, res) => {
   }
 
   return res.json({ task: task });
+};
+
+const ADD_TASK = (req, res) => {
+  const task = new TaskModel({ title: req.body.title, isCompleted: false });
+
+  task
+    .save()
+    .then((dbResponse) => {
+      return res
+        .status(201)
+        .json({ response: "Task was added", task: dbResponse });
+    })
+    .catch((err) => {
+      console.log("ERROR: ", err);
+      res.status(500).json({ response: "something went wrong" });
+    });
 };
 
 const UPDATE_TASK = (req, res) => {
