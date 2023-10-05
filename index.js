@@ -1,9 +1,10 @@
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
+const taskRouter = require("./routes/task");
 
 const app = express();
-const taskRouter = require("./routes/task");
+app.use(express.json());
 
 mongoose
   // eslint-disable-next-line no-undef
@@ -12,8 +13,6 @@ mongoose
   .catch((err) => {
     console.log("ERROR:", err);
   });
-
-app.use(express.json());
 
 app.use(taskRouter);
 
