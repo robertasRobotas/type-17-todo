@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const taskRouter = require("./routes/task");
+const userRouter = require("./routes/user");
 
 const app = express();
 app.use(express.json());
@@ -15,6 +16,11 @@ mongoose
   });
 
 app.use(taskRouter);
+app.use(userRouter);
+
+app.use((req, res) => {
+  return res.status(404).json({ response: "Endpoint not exist" });
+});
 
 // eslint-disable-next-line no-undef
 console.log(process.env.DB_CONNECTION);

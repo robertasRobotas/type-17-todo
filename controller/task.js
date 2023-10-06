@@ -1,4 +1,5 @@
 const TaskModel = require("../models/task");
+const UserModel = require("../models/user");
 
 let tasks = [];
 
@@ -16,10 +17,21 @@ const GET_TASK_BY_ID = (req, res) => {
 
 const ADD_TASK = (req, res) => {
   const task = new TaskModel({ title: req.body.title, isCompleted: false });
+  // modely yra neprivalomas id aprasytas
+  const id = task._id.toString();
+  task.id = id;
 
   task
     .save()
     .then((dbResponse) => {
+      // user_tasks
+      // dbResponse._id
+
+      UserModel.updateOne(
+        { _id: req.params.userId },
+        { $push: { user_tasks: dbResponse._id } }
+      ).exec();
+
       return res
         .status(201)
         .json({ response: "Task was added", task: dbResponse });

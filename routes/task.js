@@ -12,14 +12,10 @@ router.get("/tasks", GET_ALL_TASKS);
 
 router.get("/tasks/:id", GET_TASK_BY_ID);
 
-router.post("/tasks", ADD_TASK);
+router.post("/tasks/:userId", ADD_TASK);
 
 router.put("/tasks/:id", UPDATE_TASK);
 
 router.delete("/tasks/:id", DELETE_TASK);
-
-router.use((req, res) => {
-  return res.status(404).json({ response: "Endpoint not exist" });
-});
 
 module.exports = router;
