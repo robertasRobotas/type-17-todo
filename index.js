@@ -23,9 +23,6 @@ app.use((req, res) => {
 });
 
 // eslint-disable-next-line no-undef
-console.log(process.env.DB_CONNECTION);
-
-// eslint-disable-next-line no-undef
 app.listen(process.env.PORT, () => {
   // eslint-disable-next-line no-undef
   console.log(`App started on port ${process.env.PORT}`);
