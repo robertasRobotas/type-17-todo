@@ -1,4 +1,5 @@
 const { ObjectId } = require("mongodb");
+const bcrypt = require("bcryptjs");
 
 const UserModel = require("../models/user");
 
@@ -34,23 +35,32 @@ const GET_USER_BY_ID_WITH_TASKS = (req, res) => {
 };
 
 const ADD_USER = (req, res) => {
-  const user = new UserModel({
-    name: req.body.name,
-    email: req.body.email,
-    user_tasks: [],
-  });
+  try {
+    const salt = bcrypt.genSaltSync(10);
+    var hash = bcrypt.hashSync(req.body.password, salt);
 
-  user
-    .save()
-    .then((dbResponse) => {
-      return res
-        .status(201)
-        .json({ response: "User was added", user: dbResponse });
-    })
-    .catch((err) => {
-      console.log("ERROR: ", err);
-      res.status(500).json({ response: "something went wrong" });
+    const user = new UserModel({
+      name: req.body.name,
+      email: req.body.email,
+      user_tasks: [],
+      password: hash,
     });
+
+    user
+      .save()
+      .then((dbResponse) => {
+        return res
+          .status(201)
+          .json({ response: "User was added", user: dbResponse });
+      })
+      .catch((err) => {
+        console.log("ERROR: ", err);
+        res.status(500).json({ response: "something went wrong" });
+      });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ response: "something went wrong" });
+  }
 };
 
 module.exports = {
