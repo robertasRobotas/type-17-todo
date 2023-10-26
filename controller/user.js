@@ -1,5 +1,6 @@
 const { ObjectId } = require("mongodb");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const UserModel = require("../models/user");
 
@@ -37,7 +38,7 @@ const GET_USER_BY_ID_WITH_TASKS = (req, res) => {
 const ADD_USER = (req, res) => {
   try {
     const salt = bcrypt.genSaltSync(10);
-    var hash = bcrypt.hashSync(req.body.password, salt);
+    const hash = bcrypt.hashSync(req.body.password, salt);
 
     const user = new UserModel({
       name: req.body.name,
@@ -63,9 +64,38 @@ const ADD_USER = (req, res) => {
   }
 };
 
+const LOGIN = async (req, res) => {
+  const user = await UserModel.findOne({ email: req.body.email });
+
+  if (!user) {
+    return res.status(404).json({ response: "bad auth" });
+  }
+
+  bcrypt.compare(req.body.password, user.password, (err, isPasswordMatch) => {
+    if (!isPasswordMatch || err) {
+      return res.status(401).json({ response: "bad auth" });
+    }
+
+    const token = jwt.sign(
+      {
+        email: user.email,
+        userId: user._id,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "12h" },
+      {
+        algorithm: "RS256",
+      }
+    );
+
+    return res.status(201).json({ jwt: token });
+  });
+};
+
 module.exports = {
   GET_ALL_USERS,
   ADD_USER,
   GET_USER_BY_ID,
   GET_USER_BY_ID_WITH_TASKS,
+  LOGIN,
 };
