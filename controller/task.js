@@ -30,8 +30,10 @@ const ADD_TASK = async (req, res) => {
 
     const taskResponse = await task.save();
 
+    console.log("req.body.userId", req.body.userId);
+
     UserModel.updateOne(
-      { _id: req.params.userId },
+      { _id: req.body.userId },
       { $push: { user_tasks: taskResponse._id } }
     ).exec();
 

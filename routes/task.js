@@ -14,7 +14,7 @@ router.get("/tasks", auth, GET_ALL_TASKS);
 
 router.get("/tasks/:id", GET_TASK_BY_ID);
 
-router.post("/tasks/:userId", auth, ADD_TASK);
+router.post("/tasks", auth, ADD_TASK);
 
 router.put("/tasks/:id", auth, UPDATE_TASK);
 
